@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import EventoService from '../services/EventoService';
+import logo from '../assets/images/blz_perfil.png';
 
 const DetalhesEvento = () => {
+
   const { id } = useParams();
+  const _dbRecords = useRef(true);
 
   // Simulando dados conforme a estrutura do banco de dados
+  /*
   const evento = {
     id: 1,
     nome: 'Almoço Solidário',
@@ -31,6 +36,53 @@ const DetalhesEvento = () => {
   const porcentagemMeta = evento.metaArrecadacao > 0
     ? (evento.arrecadacao / evento.metaArrecadacao) * 100
     : 0;
+*/
+  const initialObject = {
+    id: null,
+    nome: "",
+    descricao: "",
+    localEvento: "",
+    cep: "",
+    numero: "",
+    complemento: "",
+    dataEvento: "",
+    horaEvento: "",
+    periodo: "",
+    foto: null,
+    precoEntrada: 0,
+    arrecadacao: 0,
+    totalParticipantes: 0,
+    dataCadastro: "",
+    usuario: {
+      id: null
+    },
+    categoria: {
+      id: null
+    },
+    statusEvento: ""
+  };
+
+  const [evento, setEvento] = useState(initialObject);
+
+  useEffect(() => {
+    if (_dbRecords.current) {
+      EventoService.findById(id)
+        .then(response => {
+          const evento = response.data;
+          setEvento(evento);
+          console.log(evento);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    } return () => {
+      _dbRecords.current = false;
+    }
+  }, [id]);
+
+  const porcentagemMeta = evento.arrecadacao + 10 > 0
+    ? (evento.arrecadacao / evento.arrecadacao + 10) * 100
+    : 0;
 
   return (
     <div className="container">
@@ -42,7 +94,11 @@ const DetalhesEvento = () => {
         </div>
 
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <span style={{ fontSize: '3rem' }}>🎉</span>
+
+          <div>
+             <img  src={evento.foto ? 'data:image/jpeg;base64,' + evento.foto : logo} alt="..." />
+          </div>
+        
           <h1 style={{ color: '#dc143c', marginTop: '10px' }}>{evento.nome}</h1>
           <span style={{
             background: evento.statusEvento === 'Ativo' ? '#dc143c' : '#666',
@@ -86,7 +142,7 @@ const DetalhesEvento = () => {
                   <strong>📮 CEP:</strong> {evento.cep}
                 </p>
               )}
-             
+
             </div>
 
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px' }}>
@@ -115,7 +171,7 @@ const DetalhesEvento = () => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                   <span>Meta:</span>
-                  <span>R$ {evento.metaArrecadacao.toFixed(2)}</span>
+                  <span>R$ {evento.arrecadacao.toFixed(2)}</span>
                 </div>
                 <div style={{
                   background: '#ddd',

@@ -1,28 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import EventoService from '../services/EventoService';
+import logo from '../assets/images/blz_perfil.png';
 
 const EditarEvento = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // ID do evento para edição
   const navigate = useNavigate();
-  
-  const [formData, setFormData] = useState({
-    nome: 'Almoço Solidário',
-    data: '2024-02-15',
-    horario: '12:00',
-    local: 'Centro Comunitário',
-    descricao: 'Almoço beneficente para arrecadar fundos para a comunidade local',
-    tipoEvento: 'almoco',
-    metaArrecadacao: '5000.00',
-    responsavel: 'Maria Silva',
-    status: 'Ativo'
-  });
+  const _dbRecords = useRef(true);
+
+  const initialObject = {
+    id: null,
+    nome: "",
+    descricao: "",
+    localEvento: "",
+    cep: "",
+    numero: "",
+    complemento: "",
+    dataEvento: "",
+    horaEvento: "",
+    periodo: "",
+    foto: null,
+    precoEntrada: 0,
+    arrecadacao: 0,
+    totalParticipantes: 0,
+    dataCadastro: "",
+    usuario: {
+      id: null
+    },
+    categoria: {
+      id: null
+    },
+    statusEvento: ""
+  };
+
+  const [evento, setEvento] = useState(initialObject);
+
+  useEffect(() => {
+    if (_dbRecords.current) {
+      EventoService.findById(id)
+        .then(response => {
+          const evento = response.data;
+          setEvento(evento);
+          console.log(evento);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    } return () => {
+      _dbRecords.current = false;
+    }
+  }, [id]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+    const name = e.target.name;
+    const value = e.target.value;
+    setEvento(evento => ({ ...evento, [name]: value }));
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,7 +78,9 @@ const EditarEvento = () => {
             ← Voltar para Eventos
           </Link>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <span style={{ fontSize: '3rem' }}>✏️</span>
+            <div>
+              <img src={evento.foto ? 'data:image/jpeg;base64,' + evento.foto : logo} alt="..." />
+            </div>
             <h1 style={{ color: '#dc143c', marginTop: '10px' }}>Editar Evento</h1>
           </div>
         </div>
@@ -58,101 +93,17 @@ const EditarEvento = () => {
                 <input
                   type="text"
                   name="nome"
-                  value={formData.nome}
+                  value={evento.nome}
                   onChange={handleChange}
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label>Tipo de Evento</label>
-                <select
-                  name="tipoEvento"
-                  value={formData.tipoEvento}
-                  onChange={handleChange}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                  required
-                >
-                  <option value="almoco">Almoço Beneficente</option>
-                  <option value="jantar">Jantar Solidário</option>
-                  <option value="bazar">Bazar</option>
-                  <option value="festa">Festa Junina</option>
-                  <option value="caminhada">Caminhada</option>
-                  <option value="palestra">Palestra</option>
-                  <option value="outro">Outro</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div className="form-group">
-                  <label>Data</label>
-                  <input
-                    type="date"
-                    name="data"
-                    value={formData.data}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Horário</label>
-                  <input
-                    type="time"
-                    name="horario"
-                    value={formData.horario}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Local</label>
-                <input
-                  type="text"
-                  name="local"
-                  value={formData.local}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                  required
-                >
-                  <option value="Planejando">Planejando</option>
-                  <option value="Ativo">Ativo</option>
-                  <option value="Finalizado">Finalizado</option>
-                  <option value="Cancelado">Cancelado</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <div className="form-group">
-                <label>Descrição do Evento</label>
+                <label>Descrição</label>
                 <textarea
                   name="descricao"
-                  value={formData.descricao}
+                  value={evento.descricao}
                   onChange={handleChange}
                   rows="4"
                   style={{
@@ -168,32 +119,117 @@ const EditarEvento = () => {
               </div>
 
               <div className="form-group">
-                <label>Meta de Arrecadação (R$)</label>
+                <label>Local do Evento</label>
+                <input
+                  type="text"
+                  name="localEvento"
+                  value={evento.localEvento}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>CEP</label>
+                <input
+                  type="text"
+                  name="cep"
+                  value={evento.cep}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Número</label>
+                <input
+                  type="text"
+                  name="numero"
+                  value={evento.numero}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Complemento</label>
+                <input
+                  type="text"
+                  name="complemento"
+                  value={evento.complemento}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="form-group">
+                <label>Data do Evento</label>
+                <input
+                  type="date"
+                  name="dataEvento"
+                  value={evento.dataEvento}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Horário do Evento</label>
+                <input
+                  type="time"
+                  name="horaEvento"
+                  value={evento.horaEvento}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Período</label>
+                <input
+                  type="text"
+                  name="periodo"
+                  value={evento.periodo}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Preço de Entrada</label>
                 <input
                   type="number"
-                  name="metaArrecadacao"
-                  value={formData.metaArrecadacao}
+                  name="precoEntrada"
+                  value={evento.precoEntrada}
                   onChange={handleChange}
                   step="0.01"
                 />
               </div>
 
               <div className="form-group">
-                <label>Responsável pelo Evento</label>
+                <label>Meta de Arrecadação</label>
                 <input
-                  type="text"
-                  name="responsavel"
-                  value={formData.responsavel}
+                  type="number"
+                  name="arrecadacao"
+                  value={evento.arrecadacao}
                   onChange={handleChange}
-                  required
+                  step="0.01"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Total de Participantes</label>
+                <input
+                  type="number"
+                  name="totalParticipantes"
+                  value={evento.totalParticipantes}
+                  onChange={handleChange}
                 />
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: '15px', marginTop: '30px' }}>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={handleDelete}
               style={{
                 background: '#dc3545',

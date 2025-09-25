@@ -239,12 +239,12 @@ const CriarEvento = () => {
 
           <div>
             <label>Banner do Evento</label>
-            <div>
+            
               <ImageUploader
                 setFile={setFile}
                 setImage={setImage}
                 chosenImage={chosenImage} />
-            </div>
+          
           </div>
           <div style={{ display: 'flex', gap: '15px', marginTop: '30px' }}>
             <Link to="/eventos" className="btn btn-secondary" style={{ flex: 1, textAlign: 'center' }}>
