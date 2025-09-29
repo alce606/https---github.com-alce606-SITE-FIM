@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import EventoService from '../services/EventoService';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import logo from '../assets/images/blz_perfil.png';
+import EventoService from '../services/EventoService';
+import ImageUploader from '../components/ImageUploader/ImageUploader';
 
 const EditarEvento = () => {
   const { id } = useParams(); // ID do evento para edição
@@ -59,8 +60,18 @@ const EditarEvento = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Evento atualizado com sucesso!');
-    navigate('/eventos');
+    EventoService.alterar(file, id, evento).then(
+      (response) => {
+        navigate('/eventos');
+      }, (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
+    )
   };
 
   const handleDelete = () => {
@@ -69,6 +80,15 @@ const EditarEvento = () => {
       navigate('/eventos');
     }
   };
+
+  const [file, setFile] = useState("");
+  const [chosenImage, setChosenImage] = useState();
+  const setChosenFile = (dataFile) => {
+    setFile(dataFile);
+  }
+  const setImage = (dataImage) => {
+    setChosenImage(dataImage);
+  }
 
   return (
     <div className="container">
@@ -79,10 +99,34 @@ const EditarEvento = () => {
           </Link>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <div>
-              <img src={evento.foto ? 'data:image/jpeg;base64,' + evento.foto : logo} alt="..." />
+              <img
+                src={evento.foto ? 'data:image/jpeg;base64,' + evento.foto : logo}
+                alt="Imagem atual"
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  borderRadius: '8px',
+                  marginBottom: '10px'
+                }}
+              />
             </div>
+            <ImageUploader setFile={setChosenFile} />
+            {chosenImage && (
+              <img
+                src={chosenImage}
+                alt="Pré-visualização"
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  marginTop: '10px',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                }}
+              />
+            )}
             <h1 style={{ color: '#dc143c', marginTop: '10px' }}>Editar Evento</h1>
           </div>
+
         </div>
 
         <form onSubmit={handleSubmit}>

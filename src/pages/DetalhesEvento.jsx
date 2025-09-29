@@ -81,7 +81,7 @@ const DetalhesEvento = () => {
   }, [id]);
 
   const porcentagemMeta = evento.arrecadacao + 10 > 0
-    ? (evento.arrecadacao / evento.arrecadacao + 10) * 100
+    ? (evento.arrecadacao / evento.arrecadacao * 1.05) * 10
     : 0;
 
   return (
@@ -171,7 +171,7 @@ const DetalhesEvento = () => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                   <span>Meta:</span>
-                  <span>R$ {evento.arrecadacao.toFixed(2)}</span>
+                  <span>R$ {evento.arrecadacao.toFixed(2) * 0.95}</span>
                 </div>
                 <div style={{
                   background: '#ddd',

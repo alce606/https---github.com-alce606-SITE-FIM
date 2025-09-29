@@ -43,7 +43,13 @@ const alterar = (file, id, data) => {
   formData.append('file', file);
   formData.append('nome', data.nome);
   formData.append('descricao', data.descricao);
-  formData.append('preco', data.preco);
+  formData.append("localEvento", data.localEvento);
+  formData.append("dataEvento", data.dataEvento);
+  formData.append("horaEvento", data.horaEvento);
+  formData.append("periodo", data.periodo);
+  formData.append("precoEntrada", data.precoEntrada);
+  formData.append("arrecadacao", data.arrecadacao);
+  formData.append("totalParticipantes", data.totalParticipantes);
 
   if (data.categoria.id === undefined) { // SE O USUÁRIO ALTEROU A "Categoria"
     formData.append('categoria', data.categoria.toString());
