@@ -16,6 +16,9 @@ import TrocarSenhaAdmin from './pages/TrocarSenhaAdmin';
 import PerfilAdmin from './pages/PerfilAdmin';
 import EsqueceuSenha from './pages/EsqueceuSenha';
 import PerfilUsuario from './pages/PerfilUsuario';
+import GerenciarUsuarios from './pages/GerenciarUsuarios';
+import EditarUsuario from './pages/EditarUsuario';
+import ChatSuporte from './pages/ChatSuporte';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -48,6 +51,21 @@ function App() {
           <Route path="/admin/perfil" element={
             <ProtectedRoute adminOnly={true}>
               <PerfilAdmin />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/usuarios" element={
+            <ProtectedRoute adminOnly={true}>
+              <GerenciarUsuarios />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/usuarios/editar/:id" element={
+            <ProtectedRoute adminOnly={true}>
+              <EditarUsuario />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/chat" element={
+            <ProtectedRoute adminOnly={true}>
+              <ChatSuporte />
             </ProtectedRoute>
           } />
           <Route path="/suporte" element={<Suporte />} />

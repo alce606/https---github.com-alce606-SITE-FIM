@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AdminChatManager from '../components/AdminChatManager';
 
 const GerenciamentoAdmin = () => {
   const navigate = useNavigate();
@@ -14,14 +13,14 @@ const GerenciamentoAdmin = () => {
   };
 
   const handleGerenciarUsuarios = () => {
-    alert('👥 Gerenciar Usuários:\n\n• 150 usuários cadastrados\n• 25 ONGs ativas\n• 5 administradores\n\nFuncionalidade em desenvolvimento...');
+    navigate('/admin/usuarios');
   };
 
   const handleRelatorios = () => {
     alert('📊 Relatórios:\n\n• Eventos por mês: 12\n• Taxa de participação: 85%\n• Arrecadação total: R$ 45.000\n• Usuários ativos: 120\n\nRelatórios detalhados em breve...');
   };
 
-  const [showChatManager, setShowChatManager] = useState(false);
+
 
   const handleConfiguracoes = () => {
     alert('⚙️ Configurações do Sistema:\n\n• Backup automático: Ativo\n• Notificações: Habilitadas\n• Modo manutenção: Desativo\n• Última atualização: Hoje\n\nPainel de configurações em desenvolvimento...');
@@ -32,7 +31,7 @@ const GerenciamentoAdmin = () => {
   };
 
   const handleChatSupport = () => {
-    setShowChatManager(!showChatManager);
+    navigate('/admin/chat');
   };
 
   return (
@@ -227,12 +226,7 @@ const GerenciamentoAdmin = () => {
             </div>
           </div>
         </div>
-        
-        {showChatManager && (
-          <div style={{ marginTop: '30px' }}>
-            <AdminChatManager />
-          </div>
-        )}
+
       </div>
     </div>
   );

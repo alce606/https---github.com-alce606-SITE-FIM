@@ -47,15 +47,33 @@ const create = data => {
 };
 
 const update = (id, data) => {
-    return http.multipartInstance.put(API_URL + `update/${id}`, data);
+    const formData = new FormData();
+    formData.append('nome', data.nome);
+    formData.append('email', data.email);
+    formData.append('nivelAcesso', data.nivelAcesso);
+    if (data.foto) {
+        formData.append('foto', data.foto);
+    }
+    return http.multipartInstance.put(API_URL + `update/${id}`, formData);
+};
+
+const alterar = (id, data) => {
+    const formData = new FormData();
+    formData.append('nome', data.nome);
+    formData.append('email', data.email);
+    formData.append('nivelAcesso', data.nivelAcesso);
+    if (data.foto) {
+        formData.append('foto', data.foto);
+    }
+    return http.multipartInstance.put(API_URL + `alterar/${id}`, formData);
 };
 
 const inativar = (id) => {
-    return http.multipartInstance.put(API_URL + `inativar/${id}`);
+    return http.mainInstance.put(API_URL + `inativar/${id}`);
 };
 
 const reativar = (id) => {
-    return http.multipartInstance.put(API_URL + `reativar/${id}`);
+    return http.mainInstance.put(API_URL + `reativar/${id}`);
 };
 
 const alterarSenha = (id, data) => {
@@ -69,6 +87,10 @@ const findByNome = nome => {
     return http.mainInstance.get(API_URL + `findByNome?nome=${nome}`);
 };
 
+const deletar = (id) => {
+    return http.mainInstance.delete(API_URL + `delete/${id}`);
+};
+
 
 const UsuarioService = {
     findAll,
@@ -79,10 +101,12 @@ const UsuarioService = {
     getCurrentUser,
     create,
     update,
+    alterar,
     inativar,
     reativar,
     alterarSenha,
     findByNome,
+    deletar,
 }
 
 export default UsuarioService;

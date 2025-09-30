@@ -12,7 +12,7 @@ const findAll = () => {
     return http.mainInstance.get(API_URL + 'findAll');
 };
 
-// Buscar presença por ID
+
 const findById = (id) => {
     return http.mainInstance.get(API_URL + `findById/${id}`);
 };
