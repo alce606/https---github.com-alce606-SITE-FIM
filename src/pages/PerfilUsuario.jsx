@@ -12,6 +12,7 @@ const PerfilUsuario = () => {
   const [foto, setFoto] = useState(null);
   const [novaSenha, setNovaSenha] = useState('');
   const [alterarSenha, setAlterarSenha] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     carregarPerfil();
@@ -36,7 +37,30 @@ const PerfilUsuario = () => {
     setEditMode(!editMode);
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!userData.nome) {
+      newErrors.nome = 'Nome é obrigatório';
+    }
+    
+    if (alterarSenha) {
+      if (!novaSenha) {
+        newErrors.novaSenha = 'Nova senha é obrigatória';
+      } else if (novaSenha.length < 6) {
+        newErrors.novaSenha = 'A senha deve ter pelo menos 6 caracteres';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSave = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    
     try {
       const currentUser = UsuarioService.getCurrentUser();
       const dataToSend = { ...userData };
@@ -107,9 +131,15 @@ const PerfilUsuario = () => {
               disabled={!editMode}
               style={{ 
                 background: editMode ? 'white' : '#f5f5f5',
-                cursor: editMode ? 'text' : 'not-allowed'
+                cursor: editMode ? 'text' : 'not-allowed',
+                border: `1px solid ${errors.nome ? '#dc3545' : '#ddd'}`
               }}
             />
+            {errors.nome && (
+              <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '5px' }}>
+                {errors.nome}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -160,7 +190,15 @@ const PerfilUsuario = () => {
                     onChange={(e) => setNovaSenha(e.target.value)}
                     placeholder="Digite a nova senha"
                     required={alterarSenha}
+                    style={{
+                      border: `1px solid ${errors.novaSenha ? '#dc3545' : '#ddd'}`
+                    }}
                   />
+                  {errors.novaSenha && (
+                    <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '5px' }}>
+                      {errors.novaSenha}
+                    </div>
+                  )}
                 </div>
               )}
             </>

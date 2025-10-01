@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { authService } from '../services/authService';
+import UsuarioService from '../services/UsuarioService';
 
 const EsqueceuSenha = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ const EsqueceuSenha = () => {
     setLoading(true);
     
     try {
-      await authService.forgotPassword(email);
+      await UsuarioService.forgotPassword(email);
       setMessage('Email de recuperação enviado com sucesso! Verifique sua caixa de entrada.');
     } catch (error) {
       setMessage(error.message);

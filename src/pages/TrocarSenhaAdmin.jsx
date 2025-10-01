@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/authService';
+import UsuarioService from '../services/UsuarioService';
 
 const TrocarSenhaAdmin = () => {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ const TrocarSenhaAdmin = () => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({
@@ -19,24 +20,41 @@ const TrocarSenhaAdmin = () => {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.senhaAtual) {
+      newErrors.senhaAtual = 'Senha atual é obrigatória';
+    }
+    
+    if (!formData.novaSenha) {
+      newErrors.novaSenha = 'Nova senha é obrigatória';
+    } else if (formData.novaSenha.length < 6) {
+      newErrors.novaSenha = 'A nova senha deve ter pelo menos 6 caracteres';
+    }
+    
+    if (!formData.confirmarSenha) {
+      newErrors.confirmarSenha = 'Confirmação de senha é obrigatória';
+    } else if (formData.novaSenha !== formData.confirmarSenha) {
+      newErrors.confirmarSenha = 'As senhas não coincidem';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (formData.novaSenha !== formData.confirmarSenha) {
-      setMessage('As senhas não coincidem');
-      return;
-    }
-
-    if (formData.novaSenha.length < 6) {
-      setMessage('A nova senha deve ter pelo menos 6 caracteres');
+    if (!validateForm()) {
       return;
     }
 
     setLoading(true);
     try {
-      await authService.changeAdminPassword({
-        senhaAtual: formData.senhaAtual,
-        novaSenha: formData.novaSenha
+      const currentUser = UsuarioService.getCurrentUser();
+      await UsuarioService.alterarSenha(currentUser.id, {
+        senha: formData.novaSenha
       });
       
       setMessage('Senha alterada com sucesso!');
@@ -71,11 +89,16 @@ const TrocarSenhaAdmin = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: '1px solid #ddd',
+                border: `1px solid ${errors.senhaAtual ? '#dc3545' : '#ddd'}`,
                 borderRadius: '5px',
                 fontSize: '16px'
               }}
             />
+            {errors.senhaAtual && (
+              <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '5px' }}>
+                {errors.senhaAtual}
+              </div>
+            )}
           </div>
 
           <div style={{ marginBottom: '20px' }}>
@@ -92,11 +115,16 @@ const TrocarSenhaAdmin = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: '1px solid #ddd',
+                border: `1px solid ${errors.novaSenha ? '#dc3545' : '#ddd'}`,
                 borderRadius: '5px',
                 fontSize: '16px'
               }}
             />
+            {errors.novaSenha && (
+              <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '5px' }}>
+                {errors.novaSenha}
+              </div>
+            )}
           </div>
 
           <div style={{ marginBottom: '20px' }}>
@@ -113,11 +141,16 @@ const TrocarSenhaAdmin = () => {
               style={{
                 width: '100%',
                 padding: '12px',
-                border: '1px solid #ddd',
+                border: `1px solid ${errors.confirmarSenha ? '#dc3545' : '#ddd'}`,
                 borderRadius: '5px',
                 fontSize: '16px'
               }}
             />
+            {errors.confirmarSenha && (
+              <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '5px' }}>
+                {errors.confirmarSenha}
+              </div>
+            )}
           </div>
 
           {message && (

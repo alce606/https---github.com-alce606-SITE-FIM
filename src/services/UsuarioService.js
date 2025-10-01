@@ -46,7 +46,7 @@ const create = data => {
     return http.mainInstance.post(API_URL + "create", formData);
 };
 
-const Alterar = (id, data) => {
+const update = (id, data) => {
     const formData = new FormData();
     formData.append('nome', data.nome);
     formData.append('email', data.email);
@@ -54,7 +54,7 @@ const Alterar = (id, data) => {
     if (data.foto) {
         formData.append('foto', data.foto);
     }
-    return http.multipartInstance.put(API_URL + `alterar/${id}`, formData);
+    return http.multipartInstance.put(API_URL + `update/${id}`, formData);
 };
 
 const alterar = (id, data) => {
@@ -91,13 +91,39 @@ const deletar = (id) => {
     return http.mainInstance.delete(API_URL + `delete/${id}`);
 };
 
+const loginAdmin = async (email, senha) => {
+    const response = await http.mainInstance
+        .post(API_URL + "loginAdmin", {
+            email,
+            senha,
+        });
+    if (response.data) {
+        localStorage.setItem("adminToken", response.data.token);
+        localStorage.setItem("adminUser", JSON.stringify(response.data));
+    }
+    return response.data;
+};
 
+const isAdminAuthenticated = () => {
+    return !!localStorage.getItem('adminToken');
+};
+
+const isAuthenticated = () => {
+    return !!localStorage.getItem('user');
+};
+
+
+
+const forgotPassword = async (email) => {
+    return http.mainInstance.post(API_URL + "forgotPassword", { email });
+};
 
 const UsuarioService = {
     findAll,
     findById,
     signup,
     signin,
+    loginAdmin,
     logout,
     getCurrentUser,
     create,
@@ -106,22 +132,11 @@ const UsuarioService = {
     inativar,
     reativar,
     alterarSenha,
+    forgotPassword,
+    isAdminAuthenticated,
+    isAuthenticated,
     findByNome,
     deletar,
 }
-// Trocar senha do administrador
-  changeAdminPassword: async (passwordData) => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      const response = await api.put('/auth/admin/change-password', passwordData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Erro ao alterar senha');
-    }
-  }
 
 export default UsuarioService;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { authService } from '../services/authService';
+import UsuarioService from '../services/UsuarioService';
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,19 +8,19 @@ export const useAuth = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setIsAuthenticated(authService.isAuthenticated());
-    setIsAdminAuthenticated(authService.isAdminAuthenticated());
-    setUser(authService.getCurrentUser());
+    setIsAuthenticated(UsuarioService.isAuthenticated());
+    setIsAdminAuthenticated(UsuarioService.isAdminAuthenticated());
+    setUser(UsuarioService.getCurrentUser());
   }, []);
 
-  const loginMutation = useMutation(authService.login, {
+  const loginMutation = useMutation(UsuarioService.signin, {
     onSuccess: (data) => {
       setIsAuthenticated(true);
       setUser(data.user);
     },
   });
 
-  const adminLoginMutation = useMutation(authService.loginAdmin, {
+  const adminLoginMutation = useMutation(UsuarioService.loginAdmin, {
     onSuccess: (data) => {
       setIsAdminAuthenticated(true);
       setUser(data.user);
@@ -28,7 +28,9 @@ export const useAuth = () => {
   });
 
   const logout = () => {
-    authService.logout();
+    UsuarioService.logout();
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     setIsAuthenticated(false);
     setIsAdminAuthenticated(false);
     setUser(null);
