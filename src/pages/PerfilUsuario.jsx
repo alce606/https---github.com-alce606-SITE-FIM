@@ -1,24 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UsuarioService from '../services/UsuarioService';
 
 const PerfilUsuario = () => {
   const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState({
-    nome: 'João Silva',
-    email: 'joao@email.com',
-    telefone: '(11) 99999-9999',
-    cidade: 'São Paulo',
-    organizacao: 'ONG Esperança'
+    nome: '',
+    email: ''
   });
+  const [foto, setFoto] = useState(null);
+  const [novaSenha, setNovaSenha] = useState('');
+  const [alterarSenha, setAlterarSenha] = useState(false);
+
+  useEffect(() => {
+    carregarPerfil();
+  }, []);
+
+  const carregarPerfil = async () => {
+    try {
+      const currentUser = UsuarioService.getCurrentUser();
+      if (currentUser) {
+        const response = await UsuarioService.findById(currentUser.id);
+        setUserData({
+          nome: response.data.nome || '',
+          email: response.data.email || ''
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar perfil:', error);
+    }
+  };
 
   const handleEdit = () => {
     setEditMode(!editMode);
   };
 
-  const handleSave = () => {
-    setEditMode(false);
-    alert('Perfil atualizado com sucesso!');
+  const handleSave = async () => {
+    try {
+      const currentUser = UsuarioService.getCurrentUser();
+      const dataToSend = { ...userData };
+      if (foto) {
+        dataToSend.foto = foto;
+      }
+      
+      await UsuarioService.alterar(currentUser.id, dataToSend);
+      
+      if (alterarSenha && novaSenha) {
+        await UsuarioService.alterarSenha(currentUser.id, { senha: novaSenha });
+      }
+      
+      setEditMode(false);
+      alert('Perfil atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      alert('Erro ao atualizar perfil');
+    }
   };
 
   const handleChange = (e) => {
@@ -40,7 +77,21 @@ const PerfilUsuario = () => {
     <div className="container">
       <div className="card">
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <span style={{ fontSize: '3rem' }}>👤</span>
+          {userData.foto ? (
+            <img 
+              src={userData.foto} 
+              alt="Foto do Usuário" 
+              style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '3px solid #dc143c'
+              }}
+            />
+          ) : (
+            <span style={{ fontSize: '3rem' }}>👤</span>
+          )}
           <h1 style={{ color: '#dc143c', marginTop: '10px' }}>Meu Perfil</h1>
           <p style={{ color: '#666' }}>Gerencie suas informações pessoais</p>
         </div>
@@ -73,53 +124,47 @@ const PerfilUsuario = () => {
                 background: editMode ? 'white' : '#f5f5f5',
                 cursor: editMode ? 'text' : 'not-allowed'
               }}
+              readOnly
             />
           </div>
 
-          <div className="form-group">
-            <label>Telefone</label>
-            <input
-              type="tel"
-              name="telefone"
-              value={userData.telefone}
-              onChange={handleChange}
-              disabled={!editMode}
-              style={{ 
-                background: editMode ? 'white' : '#f5f5f5',
-                cursor: editMode ? 'text' : 'not-allowed'
-              }}
-            />
-          </div>
+          {editMode && (
+            <>
+              <div className="form-group">
+                <label>Foto (opcional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFoto(e.target.files[0])}
+                />
+              </div>
 
-          <div className="form-group">
-            <label>Cidade</label>
-            <input
-              type="text"
-              name="cidade"
-              value={userData.cidade}
-              onChange={handleChange}
-              disabled={!editMode}
-              style={{ 
-                background: editMode ? 'white' : '#f5f5f5',
-                cursor: editMode ? 'text' : 'not-allowed'
-              }}
-            />
-          </div>
+              <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={alterarSenha}
+                    onChange={(e) => setAlterarSenha(e.target.checked)}
+                    style={{ marginRight: '8px' }}
+                  />
+                  Alterar senha
+                </label>
+              </div>
 
-          <div className="form-group">
-            <label>Organização</label>
-            <input
-              type="text"
-              name="organizacao"
-              value={userData.organizacao}
-              onChange={handleChange}
-              disabled={!editMode}
-              style={{ 
-                background: editMode ? 'white' : '#f5f5f5',
-                cursor: editMode ? 'text' : 'not-allowed'
-              }}
-            />
-          </div>
+              {alterarSenha && (
+                <div className="form-group">
+                  <label>Nova Senha</label>
+                  <input
+                    type="password"
+                    value={novaSenha}
+                    onChange={(e) => setNovaSenha(e.target.value)}
+                    placeholder="Digite a nova senha"
+                    required={alterarSenha}
+                  />
+                </div>
+              )}
+            </>
+          )}
 
           <div style={{ 
             display: 'flex', 

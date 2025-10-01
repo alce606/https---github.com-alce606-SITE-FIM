@@ -136,6 +136,11 @@ const GerenciarUsuarios = () => {
                     <div style={{ flex: 1, minWidth: '200px' }}>
                       <h4 style={{ margin: '0 0 5px 0', color: '#333' }}>{usuario.nome}</h4>
                       <p style={{ margin: '0 0 5px 0', color: '#666' }}>{usuario.email}</p>
+                      {usuario.telefone && (
+                        <p style={{ margin: '0 0 5px 0', color: '#666', fontSize: '0.9rem' }}>
+                          📞 {usuario.telefone}
+                        </p>
+                      )}
                       <p style={{ margin: '0', color: '#666', fontSize: '0.9rem' }}>
                         Cadastro: {new Date(usuario.dataCadastro).toLocaleDateString('pt-BR')}
                       </p>

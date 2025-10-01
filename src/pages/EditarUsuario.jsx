@@ -6,6 +6,7 @@ const EditarUsuario = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
+  const currentUser = UsuarioService.getCurrentUser();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -13,6 +14,8 @@ const EditarUsuario = () => {
     statusUsuario: 'ATIVO'
   });
   const [foto, setFoto] = useState(null);
+  const [novaSenha, setNovaSenha] = useState('');
+  const [alterarSenha, setAlterarSenha] = useState(false);
 
   useEffect(() => {
     carregarUsuario();
@@ -50,12 +53,19 @@ const EditarUsuario = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const dataToSend = { ...formData };
+      const dataToSend = { 
+        ...formData
+      };
       if (foto) {
         dataToSend.foto = foto;
       }
       
       await UsuarioService.alterar(id, dataToSend);
+      
+      if (alterarSenha && novaSenha) {
+        await UsuarioService.alterarSenha(id, { senha: novaSenha });
+      }
+      
       alert('Usuário alterado com sucesso!');
       navigate('/admin/usuarios');
     } catch (error) {
@@ -151,6 +161,31 @@ const EditarUsuario = () => {
                 onChange={handleFileChange}
               />
             </div>
+
+            <div className="form-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={alterarSenha}
+                  onChange={(e) => setAlterarSenha(e.target.checked)}
+                  style={{ marginRight: '8px' }}
+                />
+                Alterar senha
+              </label>
+            </div>
+
+            {alterarSenha && (
+              <div className="form-group">
+                <label>Nova Senha</label>
+                <input
+                  type="password"
+                  value={novaSenha}
+                  onChange={(e) => setNovaSenha(e.target.value)}
+                  placeholder="Digite a nova senha"
+                  required={alterarSenha}
+                />
+              </div>
+            )}
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
               <button 

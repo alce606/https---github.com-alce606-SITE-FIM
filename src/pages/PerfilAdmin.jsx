@@ -1,8 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UsuarioService from '../services/UsuarioService';
 
 const PerfilAdmin = () => {
   const navigate = useNavigate();
+  const [adminData, setAdminData] = useState({
+    nome: 'Administrador',
+    email: 'admin@coracaogeneroso.com',
+    cargo: 'Administrador Geral',
+    ultimoLogin: new Date().toLocaleDateString('pt-BR'),
+    foto: null
+  });
+
+  useEffect(() => {
+    carregarPerfil();
+  }, []);
+
+  const carregarPerfil = async () => {
+    try {
+      const currentUser = UsuarioService.getCurrentUser();
+      if (currentUser) {
+        const response = await UsuarioService.findById(currentUser.id);
+        setAdminData({
+          nome: response.data.nome || 'Administrador',
+          email: response.data.email || 'admin@coracaogeneroso.com',
+          cargo: 'Administrador Geral',
+          ultimoLogin: new Date().toLocaleDateString('pt-BR'),
+          foto: response.data.foto
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar perfil:', error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('userType');
@@ -12,18 +42,25 @@ const PerfilAdmin = () => {
     navigate('/');
   };
 
-  const adminData = {
-    nome: 'Administrador',
-    email: 'admin@coracaogeneroso.com',
-    cargo: 'Administrador Geral',
-    ultimoLogin: new Date().toLocaleDateString('pt-BR')
-  };
-
   return (
     <div className="container">
       <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <span style={{ fontSize: '4rem' }}>👨‍💼</span>
+          {adminData.foto ? (
+            <img 
+              src={adminData.foto} 
+              alt="Foto do Admin" 
+              style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '3px solid #dc143c'
+              }}
+            />
+          ) : (
+            <span style={{ fontSize: '4rem' }}>👨💼</span>
+          )}
           <h1 style={{ color: '#dc143c', marginTop: '10px' }}>Perfil do Administrador</h1>
         </div>
 
@@ -74,6 +111,21 @@ const PerfilAdmin = () => {
             }}
           >
             ⚙️ Painel de Controle
+          </button>
+          
+          <button
+            onClick={() => navigate('/admin/editar-perfil')}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}
+          >
+            ✏️ Editar Perfil
           </button>
           
           <button
