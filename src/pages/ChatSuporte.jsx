@@ -53,7 +53,7 @@ const ChatSuporte = () => {
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <span style={{ fontSize: '3rem' }}>💬</span>
           <h1 style={{ color: '#dc143c', marginTop: '10px' }}>Chat Suporte</h1>
-          <p style={{ color: '#666', fontSize: '1.1rem' }}>Gerenciar conversas do chatbot</p>
+          <p style={{ color: '#666', fontSize: '1.1rem' }}>Gerenciar conversas do suporte usuario</p>
         </div>
 
         {/* Filtros */}

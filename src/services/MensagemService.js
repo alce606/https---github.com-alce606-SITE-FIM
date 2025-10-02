@@ -1,29 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import MensagemService from './services/MensagemService';
+// src/services/MensagemService.js
 
-const ListaMensagens = () => {
-    const [mensagens, setMensagens] = useState([]);
+import http from '../common/http-common';
 
-    useEffect(() => {
-        MensagemService.findAll()
-            .then(response => {
-                setMensagens(response.data); // ou response.data se estiver retornando um JSON
-            })
-            .catch(error => {
-                console.error("Erro ao carregar mensagens", error);
-            });
-    }, []);
+const API_URL = 'mensagem/';
 
-    return (
-        <div>
-            <h1>Mensagens</h1>
-            <ul>
-                {mensagens.map(mensagem => (
-                    <li key={mensagem.id}>{mensagem.texto}</li>
-                ))}
-            </ul>
-        </div>
-    );
+const findAll = () => {
+    return http.mainInstance.get(`${API_URL}findAll`);
 };
 
-export default ListaMensagens;
+const findById = (id) => {
+    return http.mainInstance.get(`${API_URL}findById/${id}`);
+};
+
+const save = (mensagem) => {
+    return http.mainInstance.post(`${API_URL}save`, mensagem);
+};
+
+const MensagemService = {
+    findAll,
+    findById,
+    save
+};
+
+export default MensagemService;
