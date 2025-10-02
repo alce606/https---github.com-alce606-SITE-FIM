@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { applyTheme } from './utils/themeManager';
 import Header from './components/Header';
 import Home from './pages/Home';
 import SobreNos from './pages/SobreNos';
@@ -20,9 +21,16 @@ import GerenciarUsuarios from './pages/GerenciarUsuarios';
 import EditarUsuario from './pages/EditarUsuario';
 import EditarPerfilAdmin from './pages/EditarPerfilAdmin';
 import ChatSuporte from './pages/ChatSuporte';
+import GerenciarSuporte from './pages/GerenciarSuporte';
+import ConfiguracoesSite from './pages/ConfiguracoesSite';
+
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+  useEffect(() => {
+    applyTheme();
+  }, []);
+
   return (
     <Router>
       <div className="App">
@@ -46,6 +54,21 @@ function App() {
           <Route path="/admin" element={
             <ProtectedRoute adminOnly={true}>
               <GerenciamentoAdmin />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/gerenciamento" element={
+            <ProtectedRoute adminOnly={true}>
+              <GerenciamentoAdmin />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/suporte" element={
+            <ProtectedRoute adminOnly={true}>
+              <GerenciarSuporte />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/configuracoes" element={
+            <ProtectedRoute adminOnly={true}>
+              <ConfiguracoesSite />
             </ProtectedRoute>
           } />
           <Route path="/admin/trocar-senha" element={<TrocarSenhaAdmin />} />

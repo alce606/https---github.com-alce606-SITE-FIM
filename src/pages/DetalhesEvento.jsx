@@ -121,49 +121,62 @@ const DetalhesEvento = () => {
 
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px' }}>
               <p style={{ marginBottom: '10px' }}>
-                <strong>📅 Data:</strong> {new Date(evento.dataEvento).toLocaleDateString('pt-BR')}
+                <strong>Data:</strong> {new Date(evento.dataEvento).toLocaleDateString('pt-BR')}
               </p>
               <p style={{ marginBottom: '10px' }}>
-                <strong>🕐 Horário:</strong> {evento.horaEvento}
+                <strong> Horário:</strong> {evento.horaEvento}
               </p>
               <p style={{ marginBottom: '10px' }}>
-                <strong>🕒 Período:</strong> {evento.periodo}
+                <strong> Período:</strong> {evento.periodo}
               </p>
               <p style={{ marginBottom: '10px' }}>
-                <strong>📍 Local:</strong> {evento.localEvento}, Nº {evento.numero}
+                <strong>Local:</strong> {evento.localEvento}, Nº {evento.numero}
               </p>
               {evento.complemento && (
                 <p style={{ marginBottom: '10px' }}>
-                  <strong>🏢 Complemento:</strong> {evento.complemento}
+                  <strong> Complemento:</strong> {evento.complemento}
                 </p>
               )}
               {evento.cep && (
                 <p style={{ marginBottom: '10px' }}>
-                  <strong>📮 CEP:</strong> {evento.cep}
+                  <strong> CEP:</strong> {evento.cep}
                 </p>
               )}
 
             </div>
 
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px' }}>
-              <h4 style={{ color: '#dc143c', marginBottom: '10px' }}>📝 Descrição</h4>
+              <h4 style={{ color: '#dc143c', marginBottom: '10px' }}> Descrição</h4>
               <p style={{ lineHeight: '1.6', color: '#555' }}>{evento.descricao}</p>
             </div>
           </div>
 
           <div>
-            <h3 style={{ color: '#dc143c', marginBottom: '20px' }}>📊 Estatísticas</h3>
+            <h3 style={{ color: '#dc143c', marginBottom: '20px' }}> Estatísticas</h3>
 
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px' }}>
               <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                 <span style={{ fontSize: '2rem', display: 'block' }}>👥</span>
                 <h4 style={{ color: '#dc143c', margin: '10px 0 5px' }}>{evento.totalParticipantes}</h4>
-                <p style={{ color: '#666', margin: 0 }}>Participantes</p>
+                <p style={{ color: '#666', margin: '0 0 15px 0' }}>Participantes</p>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '15px' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.5rem', color: '#28a745' }}>✓</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc143c' }}>{evento.totalPresentes || 0}</div>
+                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Presentes</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.5rem', color: '#ffc107' }}>🪑</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc143c' }}>{evento.totalMesas || 0}</div>
+                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Mesas</div>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px' }}>
-              <h4 style={{ color: '#dc143c', marginBottom: '15px' }}>💰 Arrecadação</h4>
+              <h4 style={{ color: '#dc143c', marginBottom: '15px' }}> Arrecadação</h4>
               <div style={{ marginBottom: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
                   <span>Arrecadado:</span>
@@ -194,10 +207,10 @@ const DetalhesEvento = () => {
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <Link to={`/eventos/editar/${evento.id}`} className="btn btn-secondary" style={{ flex: 1, textAlign: 'center' }}>
-                ✏️ Editar
+                 Editar
               </Link>
               <button className="btn btn-primary" style={{ flex: 1 }}>
-                📤 Compartilhar
+                 Compartilhar
               </button>
             </div>
           </div>

@@ -1,24 +1,22 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import './utils/themeManager.js'
-
-// Aplicar tema imediatamente
-const applyThemeOnLoad = () => {
+// Gerenciador global de tema
+export const applyTheme = () => {
   const savedConfig = localStorage.getItem('siteConfig');
   if (savedConfig) {
     const config = JSON.parse(savedConfig);
+    
+    // Aplicar tema
     document.body.className = config.tema === 'escuro' ? 'dark-theme' : 'light-theme';
+    
+    // Aplicar cor primária
     document.documentElement.style.setProperty('--primary-color', config.corPrimaria || '#dc143c');
+    
+    // Aplicar título
     document.title = config.nomesite || 'Coração Generoso';
   }
 };
 
-applyThemeOnLoad();
+// Aplicar tema ao carregar qualquer página
+document.addEventListener('DOMContentLoaded', applyTheme);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+// Escutar mudanças de configuração
+window.addEventListener('configChanged', applyTheme);

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import MensagemService from '../services/MensagemService';
+import UsuarioService from '../services/UsuarioService';
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -6,6 +8,23 @@ const ChatBot = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [waitingForAdmin, setWaitingForAdmin] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const checkChatbotConfig = () => {
+      const config = JSON.parse(localStorage.getItem('siteConfig') || '{}');
+      setIsVisible(config.chatbot !== false);
+      setIsDarkTheme(config.tema === 'escuro');
+    };
+    
+    checkChatbotConfig();
+    window.addEventListener('configChanged', checkChatbotConfig);
+    
+    return () => window.removeEventListener('configChanged', checkChatbotConfig);
+  }, []);
+
+  if (!isVisible) return null;
   const messagesEndRef = useRef(null);
 
   const botResponses = {
@@ -104,6 +123,10 @@ const ChatBot = () => {
     if (category === 'admin') {
       setWaitingForAdmin(true);
       addBotMessage("Entendi que você gostaria de falar com um administrador. Estou transferindo você agora. Um de nossos atendentes entrará em contato em breve!");
+      
+      // Salvar solicitação para admin
+      saveAdminRequest(inputValue);
+      
       setTimeout(() => {
         addBotMessage("Sua solicitação foi encaminhada para nossa equipe. Você receberá um retorno por email em até 24 horas.");
       }, 2000);
@@ -118,6 +141,29 @@ const ChatBot = () => {
     }
     
     setInputValue('');
+  };
+
+  const saveAdminRequest = async (userMessage) => {
+    try {
+      const usuario = UsuarioService.getCurrentUser();
+      const conversationHistory = messages.map(msg => 
+        `${msg.sender === 'user' ? 'Usuário' : 'Bot'}: ${msg.text}`
+      ).join('\n');
+      
+      const adminRequest = {
+        dataMensagem: new Date().toISOString(),
+        nome: usuario?.nome || 'Usuário Anônimo',
+        email: usuario?.email || 'nao-informado@chatbot.com',
+        telefone: usuario?.telefone || '',
+        texto: `SOLICITAÇÃO VIA CHATBOT:\n\nÚltima mensagem: ${userMessage}\n\nHistórico da conversa:\n${conversationHistory}`,
+        statusMensagem: 'ativa',
+        usuario: { id: usuario?.id || 1 }
+      };
+      
+      await MensagemService.save(adminRequest);
+    } catch (error) {
+      console.error('Erro ao salvar solicitação:', error);
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -164,7 +210,7 @@ const ChatBot = () => {
           right: '20px',
           width: '350px',
           height: '500px',
-          backgroundColor: 'white',
+          backgroundColor: isDarkTheme ? '#2a2a2a' : 'white',
           borderRadius: '12px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           zIndex: 1000,
@@ -180,7 +226,7 @@ const ChatBot = () => {
             textAlign: 'center',
             fontWeight: 'bold'
           }}>
-            🤖 Assistente Coração Generoso
+            🤖 Assistente Virtual
           </div>
 
           {/* Área de mensagens */}
@@ -188,7 +234,7 @@ const ChatBot = () => {
             flex: 1,
             padding: '15px',
             overflowY: 'auto',
-            backgroundColor: '#f9f9f9'
+            backgroundColor: isDarkTheme ? '#1e1e1e' : '#f9f9f9'
           }}>
             {messages.map((message, index) => (
               <div key={index} style={{
@@ -200,8 +246,8 @@ const ChatBot = () => {
                   maxWidth: '80%',
                   padding: '10px 15px',
                   borderRadius: '18px',
-                  backgroundColor: message.sender === 'user' ? '#dc143c' : '#e0e0e0',
-                  color: message.sender === 'user' ? 'white' : 'black',
+                  backgroundColor: message.sender === 'user' ? '#dc143c' : (isDarkTheme ? '#404040' : '#e0e0e0'),
+                  color: message.sender === 'user' ? 'white' : (isDarkTheme ? '#e0e0e0' : 'black'),
                   fontSize: '14px',
                   lineHeight: '1.4'
                 }}>
@@ -219,7 +265,8 @@ const ChatBot = () => {
                 <div style={{
                   padding: '10px 15px',
                   borderRadius: '18px',
-                  backgroundColor: '#e0e0e0',
+                  backgroundColor: isDarkTheme ? '#404040' : '#e0e0e0',
+                  color: isDarkTheme ? '#e0e0e0' : 'black',
                   fontSize: '14px'
                 }}>
                   Digitando...
@@ -232,7 +279,7 @@ const ChatBot = () => {
           {/* Input de mensagem */}
           <div style={{
             padding: '15px',
-            borderTop: '1px solid #eee',
+            borderTop: isDarkTheme ? '1px solid #444' : '1px solid #eee',
             display: 'flex',
             gap: '10px'
           }}>
@@ -246,10 +293,12 @@ const ChatBot = () => {
               style={{
                 flex: 1,
                 padding: '10px',
-                border: '1px solid #ddd',
+                border: isDarkTheme ? '1px solid #444' : '1px solid #ddd',
                 borderRadius: '20px',
                 outline: 'none',
-                fontSize: '14px'
+                fontSize: '14px',
+                backgroundColor: isDarkTheme ? '#404040' : 'white',
+                color: isDarkTheme ? '#e0e0e0' : 'black'
               }}
             />
             <button

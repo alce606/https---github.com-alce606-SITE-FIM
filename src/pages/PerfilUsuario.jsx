@@ -63,7 +63,10 @@ const PerfilUsuario = () => {
     
     try {
       const currentUser = UsuarioService.getCurrentUser();
-      const dataToSend = { ...userData };
+      const dataToSend = { 
+        ...userData,
+        nivelAcesso: currentUser.nivelAcesso || 'USER'
+      };
       if (foto) {
         dataToSend.foto = foto;
       }

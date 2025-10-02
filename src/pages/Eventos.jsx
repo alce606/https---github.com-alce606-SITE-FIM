@@ -83,13 +83,18 @@ const Eventos = () => {
                 {evento.descricao}
               </p>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {nivelAcesso === 'ADMIN' && (
-                  <Link to={`/eventos/editar/${evento.id}`} className="btn btn-secondary" style={{ flex: 1, padding: '8px', textAlign: 'center', textDecoration: 'none' }}>
-                    Editar
-                  </Link>
+                  <>
+                    <Link to={`/eventos/editar/${evento.id}`} className="btn btn-secondary" style={{ flex: 1, padding: '8px', textAlign: 'center', textDecoration: 'none', minWidth: '100px' }}>
+                      Editar
+                    </Link>
+                    <Link to={`/eventos/presencas/${evento.id}`} className="btn btn-success" style={{ flex: 1, padding: '8px', textAlign: 'center', textDecoration: 'none', minWidth: '100px' }}>
+                      Presenças
+                    </Link>
+                  </>
                 )}
-                <Link to={`/eventos/detalhes/${evento.id}`} className="btn btn-primary" style={{ flex: nivelAcesso === 'ADMIN' ? 1 : 2, padding: '8px', textAlign: 'center', textDecoration: 'none' }}>
+                <Link to={`/eventos/detalhes/${evento.id}`} className="btn btn-primary" style={{ flex: nivelAcesso === 'ADMIN' ? 1 : 2, padding: '8px', textAlign: 'center', textDecoration: 'none', minWidth: '100px' }}>
                   Ver Detalhes
                 </Link>
               </div>

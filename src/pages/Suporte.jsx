@@ -139,12 +139,9 @@ const Suporte = () => {
         ) : (
           <div>
             {mySupports.map((support, index) => (
-              <div key={index} style={{
-                border: '1px solid #ddd',
-                borderRadius: '8px',
+              <div key={index} className="card" style={{
                 padding: '20px',
-                marginBottom: '15px',
-                backgroundColor: '#f9f9f9'
+                marginBottom: '15px'
               }}>
                 <div style={{ marginBottom: '10px' }}>
                   <strong style={{ color: '#dc143c' }}>Data:</strong> {new Date(support.dataMensagem).toLocaleDateString('pt-BR')}
@@ -155,24 +152,53 @@ const Suporte = () => {
                     marginLeft: '8px',
                     padding: '4px 8px',
                     borderRadius: '4px',
-                    backgroundColor: support.statusMensagem === 'ativa' ? '#28a745' : '#6c757d',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
                     color: '#fff',
-                    fontSize: '12px'
+                    backgroundColor: 
+                      support.statusMensagem === 'ativa' ? '#ffc107' :
+                      support.statusMensagem === 'andamento' ? '#007bff' :
+                      support.statusMensagem === 'respondido' ? '#17a2b8' :
+                      support.statusMensagem === 'finalizada' ? '#28a745' : '#6c757d'
                   }}>
-                    {support.statusMensagem === 'ativa' ? 'Em Análise' : 'Finalizado'}
+                    {support.statusMensagem === 'ativa' ? 'Em Análise' :
+                     support.statusMensagem === 'andamento' ? 'Em Andamento' :
+                     support.statusMensagem === 'respondido' ? 'Respondido' :
+                     support.statusMensagem === 'finalizada' ? 'Finalizado' : 'Indefinido'}
                   </span>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                   <strong style={{ color: '#dc143c' }}>Mensagem:</strong>
                 </div>
-                <div style={{
-                  backgroundColor: '#fff',
+                <div className="card" style={{
                   padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #eee'
+                  marginTop: '10px'
                 }}>
                   {support.texto}
                 </div>
+                
+                {(() => {
+                  const responses = JSON.parse(localStorage.getItem('adminResponses') || '{}');
+                  const response = responses[support.id];
+                  return response ? (
+                    <div style={{ marginTop: '15px' }}>
+                      <div style={{ marginBottom: '10px' }}>
+                        <strong style={{ color: '#28a745' }}>Resposta do Suporte:</strong>
+                      </div>
+                      <div className="card" style={{
+                        padding: '12px',
+                        backgroundColor: '#f0f8f0',
+                        border: '1px solid #28a745'
+                      }}>
+                        {response}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#fff3cd', border: '1px solid #ffeaa7', borderRadius: '4px' }}>
+                      <small style={{ color: '#856404' }}>Aguardando resposta do suporte...</small>
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -203,6 +229,28 @@ const Suporte = () => {
           </button>
         )}
       </div>
+      
+      {/* Avisos Informativos */}
+      <div className="card" style={{ padding: '20px', marginBottom: '20px', backgroundColor: '#e7f3ff', border: '1px solid #b3d9ff' }}>
+        <h3 style={{ color: '#0066cc', marginBottom: '15px', fontSize: '18px' }}>ℹ️ Como Podemos Ajudar</h3>
+        <div style={{ fontSize: '14px', lineHeight: '1.6' }}>
+          <p style={{ marginBottom: '10px' }}>
+            <strong>✓ Use este formulário para:</strong> Dúvidas sobre eventos, problemas no site, orientações gerais.
+          </p>
+          <p style={{ marginBottom: '10px' }}>
+            <strong>✉️ Para assuntos mais detalhados:</strong> Envie um email para <strong>suporte@coracaogeneroso.com</strong>
+          </p>
+          <p style={{ marginBottom: '0' }}>
+            <strong>⏰ Nosso compromisso:</strong> Responderemos em até 24 horas
+          </p>
+        </div>
+      </div>
+      <div className="card" style={{ padding: '15px', marginBottom: '20px', backgroundColor: '#fff3cd', border: '1px solid #ffeaa7' }}>
+        <p style={{ margin: '0', fontSize: '14px', color: '#856404' }}>
+          <strong>💡 Importante:</strong> Descreva sua situação com detalhes para que possamos ajudar melhor.
+        </p>
+      </div>
+      
       <form onSubmit={handleSubmit}>
         <input
           type="text"

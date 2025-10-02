@@ -9,12 +9,15 @@ const findById = (id) => {
     return http.mainInstance.get(API_URL + `findById/${id}`);
 };
 
-const signup = (nome, email, password) => {
-    return http.mainInstance.post(API_URL + "signup", {
-        nome,
-        email,
-        password,
-    });
+const signup = (nome, email, senha) => {
+    const formData = new FormData();
+    formData.append('nome', nome);
+    formData.append('email', email);
+    formData.append('senha', senha);
+    formData.append('nivelAcesso', 'USER');
+    formData.append('statusUsuario', 'ATIVO');
+    
+    return http.mainInstance.post(API_URL + "create", formData);
 };
 
 const signin = async (email, senha) => {
@@ -59,9 +62,12 @@ const update = (id, data) => {
 
 const alterar = (id, data) => {
     const formData = new FormData();
-    formData.append('nome', data.nome);
-    formData.append('email', data.email);
-    formData.append('nivelAcesso', data.nivelAcesso);
+    formData.append('nome', data.nome || '');
+    formData.append('email', data.email || '');
+    formData.append('nivelAcesso', data.nivelAcesso || 'USER');
+    if (data.telefone) {
+        formData.append('telefone', data.telefone);
+    }
     if (data.foto) {
         formData.append('foto', data.foto);
     }

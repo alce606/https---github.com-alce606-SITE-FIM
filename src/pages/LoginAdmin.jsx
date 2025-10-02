@@ -23,19 +23,29 @@ const LoginAdmin = () => {
         setMessage("");
 
       UsuarioService.signin(formData.email, formData.senha)
-.then(
-            () => {
-                localStorage.setItem('userType', 'admin');
-                window.dispatchEvent(new Event('userTypeChanged'));
-                const userJson = localStorage.getItem("user");
-                const user = JSON.parse(userJson || '{}');
-                if (user.statusUsuario == 'ATIVO') {
-                    navigate('/admin');
-                } else if (user.statusUsuario == 'TROCAR_SENHA') {
-                    navigate(`/alterarsenha/` + user.id);
-                }
-
-            },
+        .then(() => {
+          const userJson = localStorage.getItem('user');
+          const user = JSON.parse(userJson || '{}');
+          
+          if (user.nivelAcesso !== 'ADMIN') {
+            setMessage('Acesso negado. Apenas administradores podem acessar.');
+            return;
+          }
+          
+          localStorage.setItem('userType', 'admin');
+          localStorage.setItem('nivelAcesso', 'ADMIN');
+          window.dispatchEvent(new Event('userTypeChanged'));
+          
+          console.log('Dados do admin:', user);
+          const nomeAdmin = user.nome || user.email?.split('@')[0] || 'Administrador';
+          alert(`Bem-vindo, ${nomeAdmin}!`);
+          
+          if (user.statusUsuario === 'ATIVO') {
+            navigate('/admin');
+          } else if (user.statusUsuario === 'TROCAR_SENHA') {
+            navigate(`/alterarsenha/` + user.id);
+          }
+        },
             (error) => {
                 const respMessage =
                     (error.response &&
@@ -91,6 +101,19 @@ const LoginAdmin = () => {
                 required
               />
             </div>
+
+            {message && (
+              <div style={{ 
+                background: '#f8d7da', 
+                color: '#721c24', 
+                padding: '10px', 
+                borderRadius: '5px', 
+                marginBottom: '15px',
+                textAlign: 'center'
+              }}>
+                {message}
+              </div>
+            )}
 
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '20px' }}>
               Entrar como Admin

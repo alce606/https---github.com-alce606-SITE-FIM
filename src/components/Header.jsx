@@ -3,14 +3,47 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [userType, setUserType] = useState(null);
+  const [userName, setUserName] = useState('');
+  const [adminName, setAdminName] = useState('');
+  const [config, setConfig] = useState({
+    nomesite: 'Coração Generoso',
+    registroUsuarios: true
+  });
 
   useEffect(() => {
     const checkUserType = () => {
       const type = localStorage.getItem('userType');
       setUserType(type);
+      
+      // Pega o nome do usuário do localStorage
+      const userJson = localStorage.getItem('user');
+      if (userJson) {
+        const user = JSON.parse(userJson);
+        setUserName(user.nome || '');
+      } else {
+        setUserName('');
+      }
+      
+      // Pega o nome do admin do localStorage
+      const adminJson = localStorage.getItem('adminUser');
+      if (adminJson) {
+        const admin = JSON.parse(adminJson);
+        setAdminName(admin.nome || '');
+      } else {
+        setAdminName('');
+      }
+    };
+    
+    const loadConfig = () => {
+      const savedConfig = localStorage.getItem('siteConfig');
+      if (savedConfig) {
+        const parsedConfig = JSON.parse(savedConfig);
+        setConfig(prev => ({ ...prev, ...parsedConfig }));
+      }
     };
     
     checkUserType();
+    loadConfig();
     
     // Escuta mudanças no localStorage
     const handleStorageChange = () => {
@@ -21,10 +54,12 @@ const Header = () => {
     
     // Escuta mudanças customizadas (para mesma aba)
     window.addEventListener('userTypeChanged', handleStorageChange);
+    window.addEventListener('configChanged', loadConfig);
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('userTypeChanged', handleStorageChange);
+      window.removeEventListener('configChanged', loadConfig);
     };
   }, []);
 
@@ -48,7 +83,7 @@ const Header = () => {
             color: '#333'
           }}>
             <span className="heart-logo">❤️</span>
-            <h1 style={{ color: '#dc143c', fontSize: '1.8rem' }}>Coração Generoso</h1>
+            <h1 style={{ color: config.corPrimaria || '#dc143c', fontSize: '1.8rem' }}>{config.nomesite}</h1>
           </Link>
           
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
@@ -64,7 +99,7 @@ const Header = () => {
             {userType === 'user' ? (
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <Link to="/perfil" className="btn btn-secondary">
-                  👤 Meu Perfil
+                  👤 {userName || 'Meu Perfil'}
                 </Link>
                 <button 
                   onClick={() => {
@@ -80,7 +115,7 @@ const Header = () => {
             ) : userType === 'admin' ? (
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <Link to="/admin/perfil" className="btn btn-secondary">
-                  👨‍💼 Perfil Admin
+                  👨‍💼 {adminName || 'Perfil Admin'}
                 </Link>
                 <Link to="/admin" className="btn btn-secondary">
                   ⚙️ Gerenciar
@@ -104,9 +139,11 @@ const Header = () => {
                 <Link to="/login" className="btn btn-secondary" style={{ marginRight: '10px' }}>
                   Login
                 </Link>
-                <Link to="/cadastro" className="btn btn-primary">
-                  Cadastro
-                </Link>
+                {config.registroUsuarios && (
+                  <Link to="/cadastro" className="btn btn-primary">
+                    Cadastro
+                  </Link>
+                )}
               </>
             )}
           </div>

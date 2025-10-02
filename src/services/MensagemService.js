@@ -16,10 +16,15 @@ const save = (mensagem) => {
     return http.mainInstance.post(`${API_URL}save`, mensagem);
 };
 
+const deleteById = (id) => {
+    return http.mainInstance.delete(`${API_URL}delete/${id}`);
+};
+
 const MensagemService = {
     findAll,
     findById,
-    save
+    save,
+    deleteById
 };
 
 export default MensagemService;
