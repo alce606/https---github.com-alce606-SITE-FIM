@@ -21,15 +21,20 @@ const signup = (nome, email, senha) => {
 };
 
 const signin = async (email, senha) => {
-    const response = await http.mainInstance
-        .post(API_URL + "login", {
-            email,
-            senha,
-        });
-    if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+    try {
+        const response = await http.mainInstance
+            .post(API_URL + "login", {
+                email,
+                senha,
+            });
+        if (response.data) {
+            localStorage.setItem("user", JSON.stringify(response.data));
+        }
+        return response.data;
+    } catch (error) {
+        console.error('Erro no login:', error);
+        throw error.response?.data || error.message || 'Erro no login';
     }
-    return response.data;
 };
 
 const logout = () => {
@@ -38,6 +43,12 @@ const logout = () => {
 
 const getCurrentUser = () => {
     return JSON.parse(localStorage.getItem("user"));
+};
+
+const updateCurrentUser = (userData) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    // Dispara evento para atualizar o Header
+    window.dispatchEvent(new Event('userTypeChanged'));
 };
 
 const create = data => {
@@ -60,7 +71,7 @@ const update = (id, data) => {
     return http.multipartInstance.put(API_URL + `update/${id}`, formData);
 };
 
-const alterar = (id, data) => {
+const alterar = async (id, data) => {
     const formData = new FormData();
     formData.append('nome', data.nome || '');
     formData.append('email', data.email || '');
@@ -71,7 +82,15 @@ const alterar = (id, data) => {
     if (data.foto) {
         formData.append('foto', data.foto);
     }
-    return http.multipartInstance.put(API_URL + `alterar/${id}`, formData);
+    const response = await http.multipartInstance.put(API_URL + `alterar/${id}`, formData);
+    
+    // Atualiza localStorage se for o usuário logado
+    const currentUser = getCurrentUser();
+    if (currentUser && currentUser.id === id) {
+        updateCurrentUser({ ...currentUser, ...response.data });
+    }
+    
+    return response;
 };
 
 const inativar = (id) => {
@@ -98,16 +117,21 @@ const deletar = (id) => {
 };
 
 const loginAdmin = async (email, senha) => {
-    const response = await http.mainInstance
-        .post(API_URL + "loginAdmin", {
-            email,
-            senha,
-        });
-    if (response.data) {
-        localStorage.setItem("adminToken", response.data.token);
-        localStorage.setItem("adminUser", JSON.stringify(response.data));
+    try {
+        const response = await http.mainInstance
+            .post(API_URL + "loginAdmin", {
+                email,
+                senha,
+            });
+        if (response.data) {
+            localStorage.setItem("adminToken", response.data.token);
+            localStorage.setItem("adminUser", JSON.stringify(response.data));
+        }
+        return response.data;
+    } catch (error) {
+        console.error('Erro no login admin:', error);
+        throw error.response?.data || error.message || 'Erro no login admin';
     }
-    return response.data;
 };
 
 const isAdminAuthenticated = () => {
@@ -132,6 +156,7 @@ const UsuarioService = {
     loginAdmin,
     logout,
     getCurrentUser,
+    updateCurrentUser,
     create,
     update,
     alterar,
