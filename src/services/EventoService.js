@@ -74,6 +74,18 @@ const reativar = (id) => {
   return http.multipartInstance.put(API_URL + `reativar/${id}`);
 };
 
+const confirmarPresenca = (eventoId, usuarioId) => {
+  return http.mainInstance.post(API_URL + `${eventoId}/participacao`, { usuarioId });
+};
+
+const cancelarParticipacao = (eventoId, usuarioId) => {
+  return http.mainInstance.delete(API_URL + `${eventoId}/participacao/${usuarioId}`);
+};
+
+const verificarParticipacao = (eventoId, usuarioId) => {
+  return http.mainInstance.get(API_URL + `${eventoId}/participacao/${usuarioId}`);
+};
+
 const EventoService = {
   findAll,
   findById,
@@ -81,6 +93,9 @@ const EventoService = {
   alterar,
   inativar,
   reativar,
+  confirmarPresenca,
+  cancelarParticipacao,
+  verificarParticipacao,
 };
 
 export default EventoService;

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import EventoService from '../services/EventoService';
+import UsuarioService from '../services/UsuarioService';
+import PresencaService from '../services/PresencaService';
 import logo from '../assets/images/blz_perfil.png';
 
 const DetalhesEvento = () => {
@@ -63,9 +65,15 @@ const DetalhesEvento = () => {
   };
 
   const [evento, setEvento] = useState(initialObject);
+  const [isParticipating, setIsParticipating] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     if (_dbRecords.current) {
+      // Carrega dados do usuário
+      const user = UsuarioService.getCurrentUser();
+      setCurrentUser(user);
+      
       EventoService.findById(id)
         .then(response => {
           const evento = response.data;
@@ -83,6 +91,41 @@ const DetalhesEvento = () => {
   const porcentagemMeta = evento.arrecadacao + 10 > 0
     ? (evento.arrecadacao / evento.arrecadacao * 1.05) * 10
     : 0;
+
+  const handleConfirmarPresenca = async () => {
+    if (!currentUser) {
+      alert('Você precisa estar logado para confirmar presença!');
+      return;
+    }
+    try {
+      const presencaData = {
+        usuarioId: currentUser.id,
+        eventoId: evento.id
+      };
+      await PresencaService.save(presencaData);
+      setIsParticipating(true);
+      alert('Presença confirmada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao confirmar presença:', error);
+      alert('Erro ao confirmar presença. Tente novamente.');
+    }
+  };
+
+  const handleCancelarParticipacao = async () => {
+    if (!currentUser) {
+      alert('Você precisa estar logado!');
+      return;
+    }
+    try {
+      // Assumindo que você tem o ID da presença ou pode buscar
+      await PresencaService.desmarcar(currentUser.id);
+      setIsParticipating(false);
+      alert('Participação cancelada!');
+    } catch (error) {
+      console.error('Erro ao cancelar participação:', error);
+      alert('Erro ao cancelar participação. Tente novamente.');
+    }
+  };
 
   return (
     <div className="container">
@@ -206,12 +249,23 @@ const DetalhesEvento = () => {
             </div>
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <Link to={`/eventos/editar/${evento.id}`} className="btn btn-secondary" style={{ flex: 1, textAlign: 'center' }}>
-                 Editar
-              </Link>
-              <button className="btn btn-primary" style={{ flex: 1 }}>
-                 Compartilhar
-              </button>
+              {!isParticipating ? (
+                <button 
+                  className="btn btn-primary" 
+                  style={{ flex: 1 }}
+                  onClick={handleConfirmarPresenca}
+                >
+                  ✓ Confirmar Presença
+                </button>
+              ) : (
+                <button 
+                  className="btn btn-secondary" 
+                  style={{ flex: 1 }}
+                  onClick={handleCancelarParticipacao}
+                >
+                  ✗ Cancelar Participação
+                </button>
+              )}
             </div>
           </div>
         </div>
