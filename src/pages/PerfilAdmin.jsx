@@ -128,20 +128,7 @@ const PerfilAdmin = () => {
             ✏️ Editar Perfil
           </button>
           
-          <button
-            onClick={() => navigate('/admin/trocar-senha')}
-            style={{
-              padding: '12px 24px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '16px'
-            }}
-          >
-            🔐 Trocar Senha
-          </button>
+
           
           <button
             onClick={handleLogout}

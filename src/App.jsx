@@ -13,7 +13,7 @@ import DetalhesEvento from './pages/DetalhesEvento';
 import EditarEvento from './pages/EditarEvento';
 import LoginAdmin from './pages/LoginAdmin';
 import GerenciamentoAdmin from './pages/GerenciamentoAdmin';
-import TrocarSenhaAdmin from './pages/TrocarSenhaAdmin';
+
 import PerfilAdmin from './pages/PerfilAdmin';
 import EsqueceuSenha from './pages/EsqueceuSenha';
 import PerfilUsuario from './pages/PerfilUsuario';
@@ -23,6 +23,7 @@ import EditarPerfilAdmin from './pages/EditarPerfilAdmin';
 import ChatSuporte from './pages/ChatSuporte';
 import GerenciarSuporte from './pages/GerenciarSuporte';
 import ConfiguracoesSite from './pages/ConfiguracoesSite';
+import ParticipantesEvento from './pages/ParticipantesEvento';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -50,6 +51,11 @@ function App() {
               <EditarEvento />
             </ProtectedRoute>
           } />
+          <Route path="/eventos/presencas/:id" element={
+            <ProtectedRoute adminOnly={true}>
+              <ParticipantesEvento />
+            </ProtectedRoute>
+          } />
           <Route path="/login-admin" element={<LoginAdmin />} />
           <Route path="/admin" element={
             <ProtectedRoute adminOnly={true}>
@@ -71,7 +77,7 @@ function App() {
               <ConfiguracoesSite />
             </ProtectedRoute>
           } />
-          <Route path="/admin/trocar-senha" element={<TrocarSenhaAdmin />} />
+
           <Route path="/admin/perfil" element={
             <ProtectedRoute adminOnly={true}>
               <PerfilAdmin />

@@ -21,9 +21,7 @@ const GerenciamentoAdmin = () => {
     navigate('/admin/configuracoes');
   };
 
-  const handleTrocarSenha = () => {
-    navigate('/admin/trocar-senha');
-  };
+
 
 
 
@@ -143,24 +141,7 @@ const GerenciamentoAdmin = () => {
             <button className="btn btn-danger">Ver Suportes</button>
           </div>
 
-          <div 
-            className="card" 
-            style={{ 
-              background: '#fff0f0', 
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
-            }}
-            onClick={handleTrocarSenha}
-            onMouseEnter={(e) => e.target.style.transform = 'translateY(-3px)'}
-            onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-          >
-            <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-              <i className="bi bi-key" style={{ fontSize: '2.5rem', color: '#dc143c' }}></i>
-            </div>
-            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>Trocar Senha</h3>
-            <p style={{ marginBottom: '15px' }}>Alterar senha de administrador</p>
-            <button className="btn btn-danger">Alterar Senha</button>
-          </div>
+
 
 
         </div>
