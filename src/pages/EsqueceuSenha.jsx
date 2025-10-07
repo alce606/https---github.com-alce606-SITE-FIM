@@ -4,18 +4,56 @@ import UsuarioService from '../services/UsuarioService';
 
 const EsqueceuSenha = () => {
   const [email, setEmail] = useState('');
+  const [token, setToken] = useState('');
+  const [novaSenha, setNovaSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [step, setStep] = useState(1); // 1: email, 2: token, 3: nova senha
+  const [tokenValido, setTokenValido] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
     try {
       await UsuarioService.forgotPassword(email);
-      setMessage('Email de recuperação enviado com sucesso! Verifique sua caixa de entrada.');
+      setMessage('Email de recuperação enviado! Digite o token recebido.');
+      setStep(2);
     } catch (error) {
       setMessage(error.message);
+      setStep(2); // Mostra o campo mesmo se der erro
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTokenSubmit = (e) => {
+    e.preventDefault();
+    if (token.trim()) {
+      setTokenValido(true);
+      setMessage('Agora defina sua nova senha.');
+    } else {
+      setMessage('Digite o token recebido por email.');
+    }
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (novaSenha !== confirmarSenha) {
+      setMessage('As senhas não coincidem!');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      // Aqui será implementado pelo professor
+      setMessage('Senha alterada com sucesso! Você pode fazer login agora.');
+      setStep(4);
+    } catch (error) {
+      setMessage('Erro ao alterar senha.');
     } finally {
       setLoading(false);
     }
@@ -38,7 +76,8 @@ const EsqueceuSenha = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          {step === 1 && (
+            <form onSubmit={handleEmailSubmit}>
             <div className="form-group">
               <label>Email</label>
               <input
@@ -78,6 +117,73 @@ const EsqueceuSenha = () => {
               </p>
             </div>
           </form>
+          )}
+
+          {step === 2 && (
+            <form onSubmit={handleTokenSubmit}>
+              <div className="form-group">
+                <label>Token de Recuperação</label>
+                <input
+                  type="text"
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  placeholder="Digite o token recebido por email"
+                  required
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="btn btn-primary" 
+                style={{ width: '100%', marginBottom: '20px' }}
+              >
+                Continuar
+              </button>
+            </form>
+          )}
+
+          {tokenValido && (
+            <form onSubmit={handlePasswordSubmit}>
+              <div className="form-group">
+                <label>Nova Senha</label>
+                <input
+                  type="password"
+                  value={novaSenha}
+                  onChange={(e) => setNovaSenha(e.target.value)}
+                  placeholder="Digite sua nova senha"
+                  required
+                  minLength="6"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Confirmar Nova Senha</label>
+                <input
+                  type="password"
+                  value={confirmarSenha}
+                  onChange={(e) => setConfirmarSenha(e.target.value)}
+                  placeholder="Confirme sua nova senha"
+                  required
+                  minLength="6"
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="btn btn-primary" 
+                style={{ width: '100%', marginBottom: '20px' }}
+                disabled={loading}
+              >
+                {loading ? 'Alterando...' : 'Alterar Senha'}
+              </button>
+            </form>
+          )}
+
+          {step === 4 && (
+            <div style={{ textAlign: 'center' }}>
+              <Link to="/login" className="btn btn-primary">Ir para Login</Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

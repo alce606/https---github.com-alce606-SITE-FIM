@@ -8,7 +8,6 @@ const Cadastro = () => {
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
-    telefone: '',
     senha: '',
     confirmarSenha: ''
   });
@@ -147,17 +146,7 @@ const Cadastro = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label>Telefone</label>
-              <input
-                type="tel"
-                name="telefone"
-                value={formData.telefone}
-                onChange={handleChange}
-                placeholder="(11) 99999-9999"
-                required
-              />
-            </div>
+
 
             <div className="form-group">
               <label>Senha</label>

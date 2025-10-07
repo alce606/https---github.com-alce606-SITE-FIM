@@ -148,6 +148,14 @@ const forgotPassword = async (email) => {
     return http.mainInstance.post(API_URL + "forgotPassword", { email });
 };
 
+const validateToken = async (email, token) => {
+    return http.mainInstance.post(API_URL + "validateToken", { email, token });
+};
+
+const resetPassword = async (email, token, novaSenha) => {
+    return http.mainInstance.post(API_URL + "resetPassword", { email, token, novaSenha });
+};
+
 const UsuarioService = {
     findAll,
     findById,
@@ -164,6 +172,8 @@ const UsuarioService = {
     reativar,
     alterarSenha,
     forgotPassword,
+    validateToken,
+    resetPassword,
     isAdminAuthenticated,
     isAuthenticated,
     findByNome,

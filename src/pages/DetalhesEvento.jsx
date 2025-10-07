@@ -67,6 +67,7 @@ const DetalhesEvento = () => {
   const [evento, setEvento] = useState(initialObject);
   const [isParticipating, setIsParticipating] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [totalPresencas, setTotalPresencas] = useState(0);
 
   useEffect(() => {
     if (_dbRecords.current) {
@@ -79,6 +80,16 @@ const DetalhesEvento = () => {
           const evento = response.data;
           setEvento(evento);
           console.log(evento);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      
+      // Carregar número de presenças confirmadas
+      PresencaService.findAll()
+        .then(response => {
+          const presencasEvento = response.data.filter(p => p.evento?.id == id && p.statusPresenca === 'CONFIRMADO');
+          setTotalPresencas(presencasEvento.length);
         })
         .catch(e => {
           console.log(e);
@@ -99,8 +110,9 @@ const DetalhesEvento = () => {
     }
     try {
       const presencaData = {
-        usuarioId: currentUser.id,
-        eventoId: evento.id
+        statusPresenca: 'CONFIRMADO',
+        usuario: { id: currentUser.id },
+        evento: { id: evento.id }
       };
       await PresencaService.save(presencaData);
       setIsParticipating(true);
@@ -203,16 +215,11 @@ const DetalhesEvento = () => {
                 <h4 style={{ color: '#dc143c', margin: '10px 0 5px' }}>{evento.totalParticipantes}</h4>
                 <p style={{ color: '#666', margin: '0 0 15px 0' }}>Participantes</p>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '15px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '1.5rem', color: '#28a745' }}>✓</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc143c' }}>{evento.totalPresentes || 0}</div>
-                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Presentes</div>
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.5rem', color: '#ffc107' }}>🪑</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc143c' }}>{evento.totalMesas || 0}</div>
-                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Mesas</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc143c' }}>{totalPresencas}</div>
+                    <div style={{ fontSize: '0.9rem', color: '#666' }}>Presenças Confirmadas</div>
                   </div>
                 </div>
               </div>
@@ -248,25 +255,27 @@ const DetalhesEvento = () => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
-              {!isParticipating ? (
-                <button 
-                  className="btn btn-primary" 
-                  style={{ flex: 1 }}
-                  onClick={handleConfirmarPresenca}
-                >
-                  ✓ Confirmar Presença
-                </button>
-              ) : (
-                <button 
-                  className="btn btn-secondary" 
-                  style={{ flex: 1 }}
-                  onClick={handleCancelarParticipacao}
-                >
-                  ✗ Cancelar Participação
-                </button>
-              )}
-            </div>
+            {localStorage.getItem('nivelAcesso') !== 'ADMIN' && (
+              <div style={{ display: 'flex', gap: '10px' }}>
+                {!isParticipating ? (
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ flex: 1 }}
+                    onClick={handleConfirmarPresenca}
+                  >
+                    ✓ Confirmar Presença
+                  </button>
+                ) : (
+                  <button 
+                    className="btn btn-secondary" 
+                    style={{ flex: 1 }}
+                    onClick={handleCancelarParticipacao}
+                  >
+                    ✗ Cancelar Participação
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

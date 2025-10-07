@@ -38,6 +38,8 @@ const remover = (id) => {
     return http.mainInstance.delete(API_URL + `delete/${id}`);
 };
 
+
+
 const PresencaService = {
     test,
     findAll,

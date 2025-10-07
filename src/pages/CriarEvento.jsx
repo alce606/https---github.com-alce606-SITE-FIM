@@ -25,6 +25,7 @@ const CriarEvento = () => {
     horaEvento: '',
     periodo: '',
     precoEntrada: '',
+
     usuario: null,
     categoria: null
   });

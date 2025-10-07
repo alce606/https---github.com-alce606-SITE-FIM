@@ -19,7 +19,7 @@ const ParticipantesEvento = () => {
       setEvento(eventoResponse.data);
       
       const presencasResponse = await PresencaService.findAll();
-      const participantesEvento = presencasResponse.data.filter(p => p.eventoId == id);
+      const participantesEvento = presencasResponse.data.filter(p => p.evento?.id == id && p.statusPresenca === 'CONFIRMADO');
       setParticipantes(participantesEvento);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -28,7 +28,7 @@ const ParticipantesEvento = () => {
     }
   };
 
-  const vagasDisponiveis = (evento.maxParticipantes || 100) - participantes.length;
+  const vagasDisponiveis = (evento.totalParticipantes || 0) - participantes.length;
 
   if (loading) {
     return <div className="container">Carregando...</div>;
@@ -86,10 +86,10 @@ const ParticipantesEvento = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <div>
                       <div style={{ fontWeight: 'bold', color: '#333' }}>
-                        {participante.nomeUsuario || `Participante ${index + 1}`}
+                        {participante.usuario?.nome || `Participante ${index + 1}`}
                       </div>
                       <div style={{ color: '#666', fontSize: '0.9rem' }}>
-                        {participante.emailUsuario || 'Email não disponível'}
+                        {participante.usuario?.email || 'Email não disponível'}
                       </div>
                     </div>
                   </div>
@@ -105,7 +105,7 @@ const ParticipantesEvento = () => {
                       Confirmado
                     </span>
                     <span style={{ color: '#666', fontSize: '0.9rem' }}>
-                      {new Date(participante.dataConfirmacao || Date.now()).toLocaleDateString('pt-BR')}
+                      {new Date(participante.dataCadastro).toLocaleDateString('pt-BR')}
                     </span>
                   </div>
                 </div>
