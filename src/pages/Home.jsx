@@ -8,8 +8,8 @@ const Home = () => {
     navigate('/eventos');
   };
 
-  const handleColaboracao = () => {
-    navigate('/sobre');
+  const handleSuporte = () => {
+    navigate('/suporte');
   };
 
   const handleResultados = () => {
@@ -48,7 +48,7 @@ const Home = () => {
               e.target.style.boxShadow = 'none';
             }}
           >
-            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>📊 Gerenciamento</h3>
+            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}> Gerenciamento</h3>
             <p>Controle total das atividades e recursos do projeto</p>
             <button style={{
               marginTop: '15px',
@@ -68,7 +68,7 @@ const Home = () => {
               cursor: 'pointer',
               transition: 'transform 0.2s, box-shadow 0.2s'
             }}
-            onClick={handleColaboracao}
+            onClick={handleSuporte}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-5px)';
               e.target.style.boxShadow = '0 8px 25px rgba(220, 20, 60, 0.15)';
@@ -78,8 +78,8 @@ const Home = () => {
               e.target.style.boxShadow = 'none';
             }}
           >
-            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>🤝 Colaboração</h3>
-            <p>Trabalhe em equipe para maximizar o impacto social</p>
+            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>Nossa Plataforma</h3>
+            <p>Nossa plataforma está ativa e disponível para ONGs e organizações que desejam gerenciar seus eventos e divulgar suas ações beneficentes.</p>
             <button style={{
               marginTop: '15px',
               padding: '8px 16px',
@@ -88,7 +88,7 @@ const Home = () => {
               border: 'none',
               borderRadius: '5px',
               cursor: 'pointer'
-            }}>Ver Equipe</button>
+            }}>Ir ao Suporte</button>
           </div>
           
           <div 
@@ -108,7 +108,7 @@ const Home = () => {
               e.target.style.boxShadow = 'none';
             }}
           >
-            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>📈 Resultados</h3>
+            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>Resultados</h3>
             <p>Acompanhe o progresso e os resultados alcançados</p>
             <button style={{
               marginTop: '15px',

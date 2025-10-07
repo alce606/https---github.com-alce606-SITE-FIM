@@ -11,10 +11,26 @@ const SobreNos = () => {
         
         <div style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#555' }}>
           <p style={{ marginBottom: '20px' }}>
-            O <strong>Coração Generoso</strong> é um site dedicado ao <strong>gerenciamento e divulgação </strong> 
+            O <strong>Coração Generoso</strong> é uma plataforma completa dedicada ao <strong>gerenciamento e divulgação</strong> 
             de eventos beneficentes e projetos sociais. Nossa plataforma está disponível para ONGs 
             e organizações que desejam organizar e promover suas ações solidárias.
           </p>
+          
+          <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px', marginBottom: '20px', border: '2px solid #dc143c' }}>
+            <h4 style={{ color: '#dc143c', marginBottom: '10px' }}>Nosso Aplicativo Móvel</h4>
+            <p style={{ marginBottom: '10px' }}>
+              Desenvolvemos um <strong>aplicativo exclusivo</strong> que permite aos usuários:
+            </p>
+            <ul style={{ marginLeft: '20px', marginBottom: '15px' }}>
+              <li><strong>Marcar presença nos eventos</strong> - Funcionalidade disponível APENAS no app</li>
+              <li>Receber notificações sobre novos eventos</li>
+              <li>Acompanhar eventos confirmados</li>
+              <li>Interface otimizada para dispositivos móveis</li>
+            </ul>
+            <p style={{ fontSize: '0.9rem', color: '#666', fontStyle: 'italic' }}>
+              * A confirmação de presença só pode ser feita através do nosso aplicativo móvel.
+            </p>
+          </div>
           
           <h3 style={{ color: '#dc143c', marginBottom: '15px', marginTop: '30px' }}>Nossa Missão</h3>
           <p style={{ marginBottom: '20px' }}>
@@ -31,12 +47,12 @@ const SobreNos = () => {
             marginBottom: '30px'
           }}>
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px' }}>
-              <h4 style={{ color: '#dc143c', marginBottom: '10px' }}>📋 Gerenciamento</h4>
+              <h4 style={{ color: '#dc143c', marginBottom: '10px' }}> Gerenciamento</h4>
               <p>Sistema completo para criar, editar e organizar eventos beneficentes</p>
             </div>
             
             <div style={{ background: '#fff0f0', padding: '20px', borderRadius: '10px' }}>
-              <h4 style={{ color: '#dc143c', marginBottom: '10px' }}>📢 Divulgação</h4>
+              <h4 style={{ color: '#dc143c', marginBottom: '10px' }}> Divulgação</h4>
               <p>Plataforma para promover e dar visibilidade aos seus eventos</p>
             </div>
           </div>
@@ -85,15 +101,37 @@ const SobreNos = () => {
             </div>
           </div>
           
-          <h3 style={{ color: '#dc143c', marginBottom: '15px', marginTop: '30px' }}>Disponibilidade</h3>
-          <div style={{ background: '#fff0f0', padding: '25px', borderRadius: '10px', textAlign: 'center' }}>
-            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '15px' }}>🌐</span>
-            <h4 style={{ color: '#dc143c', marginBottom: '10px' }}>Site Ativo!!!!!!</h4>
-            <p style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
-              Nossa plataforma está <strong> destinado </strong> para ONGs e organizações 
-              que desejam gerenciar seus eventos e divulgar suas ações beneficentes. 
-              
+          <h3 style={{ color: '#dc143c', marginBottom: '15px', marginTop: '30px' }}>Galeria do Aplicativo</h3>
+          <div style={{ background: '#fff0f0', padding: '25px', borderRadius: '10px', textAlign: 'center', marginBottom: '30px' }}>
+            <h4 style={{ color: '#dc143c', marginBottom: '15px' }}>Screenshots do App</h4>
+            <div style={{ 
+              height: '200px', 
+              background: '#f8f9fa', 
+              border: '2px dashed #dc143c', 
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#666'
+            }}>
+              [Carrossel de fotos do aplicativo será adicionado aqui]
+            </div>
+            <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '10px' }}>
+              Veja como é fácil usar nosso aplicativo para participar dos eventos!
             </p>
+          </div>
+          
+          <h3 style={{ color: '#dc143c', marginBottom: '15px', marginTop: '30px' }}>Contato</h3>
+          <div style={{ background: '#fff0f0', padding: '25px', borderRadius: '10px', textAlign: 'center' }}>
+            <h4 style={{ color: '#dc143c', marginBottom: '15px' }}>Entre em Contato</h4>
+            <div style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+              <p><strong>Celular:</strong> <span style={{ color: '#dc143c' }}>(11) 98635-0216</span></p>
+              <p><strong>Email:</strong> coracaogeneroso087@gmail.com</p>
+              <p style={{ marginTop: '15px', fontSize: '1rem' }}>
+                Nossa plataforma está <strong>ativa e disponível</strong> para ONGs e organizações 
+                que desejam gerenciar seus eventos e divulgar suas ações beneficentes.
+              </p>
+            </div>
           </div>
         </div>
       </div>

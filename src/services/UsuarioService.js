@@ -72,17 +72,7 @@ const update = (id, data) => {
 };
 
 const alterar = async (id, data) => {
-    const formData = new FormData();
-    formData.append('nome', data.nome || '');
-    formData.append('email', data.email || '');
-    formData.append('nivelAcesso', data.nivelAcesso || 'USER');
-    if (data.telefone) {
-        formData.append('telefone', data.telefone);
-    }
-    if (data.foto) {
-        formData.append('foto', data.foto);
-    }
-    const response = await http.multipartInstance.put(API_URL + `alterar/${id}`, formData);
+    const response = await http.mainInstance.put(API_URL + `alterar/${id}`, data);
     
     // Atualiza localStorage se for o usuário logado
     const currentUser = getCurrentUser();

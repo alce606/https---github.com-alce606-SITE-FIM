@@ -7,7 +7,8 @@ const PerfilUsuario = () => {
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState({
     nome: '',
-    email: ''
+    email: '',
+    foto: null
   });
   const [foto, setFoto] = useState(null);
   const [novaSenha, setNovaSenha] = useState('');
@@ -25,7 +26,8 @@ const PerfilUsuario = () => {
         const response = await UsuarioService.findById(currentUser.id);
         setUserData({
           nome: response.data.nome || '',
-          email: response.data.email || ''
+          email: response.data.email || '',
+          foto: response.data.foto || null
         });
       }
     } catch (error) {
@@ -63,15 +65,15 @@ const PerfilUsuario = () => {
     
     try {
       const currentUser = UsuarioService.getCurrentUser();
-      const dataToSend = { 
-        ...userData,
-        nivelAcesso: currentUser.nivelAcesso || 'USER'
-      };
+      const formData = new FormData();
+      formData.append('nome', userData.nome);
+      formData.append('email', userData.email);
+      formData.append('nivelAcesso', currentUser.nivelAcesso || 'USER');
       if (foto) {
-        dataToSend.foto = foto;
+        formData.append('foto', foto);
       }
       
-      await UsuarioService.alterar(currentUser.id, dataToSend);
+      await UsuarioService.alterar(currentUser.id, formData);
       
       if (alterarSenha && novaSenha) {
         await UsuarioService.alterarSenha(currentUser.id, { senha: novaSenha });
@@ -106,7 +108,7 @@ const PerfilUsuario = () => {
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           {userData.foto ? (
             <img 
-              src={userData.foto} 
+              src={`data:image/jpeg;base64,${userData.foto}`} 
               alt="Foto do Usuário" 
               style={{
                 width: '120px',
@@ -117,7 +119,20 @@ const PerfilUsuario = () => {
               }}
             />
           ) : (
-            <span style={{ fontSize: '3rem' }}>👤</span>
+            <div style={{ 
+              width: '120px', 
+              height: '120px', 
+              borderRadius: '50%', 
+              backgroundColor: '#f0f0f0', 
+              border: '3px solid #dc143c',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px',
+              color: '#666'
+            }}>
+              Sem foto
+            </div>
           )}
           <h1 style={{ color: '#dc143c', marginTop: '10px' }}>Meu Perfil</h1>
           <p style={{ color: '#666' }}>Gerencie suas informações pessoais</p>
@@ -225,7 +240,7 @@ const PerfilUsuario = () => {
                   cursor: 'pointer'
                 }}
               >
-                ✏️ Editar Perfil
+                Editar Perfil
               </button>
             ) : (
               <>
@@ -240,7 +255,7 @@ const PerfilUsuario = () => {
                     cursor: 'pointer'
                   }}
                 >
-                  ✅ Salvar
+                  Salvar
                 </button>
                 <button 
                   onClick={() => setEditMode(false)}
@@ -253,7 +268,7 @@ const PerfilUsuario = () => {
                     cursor: 'pointer'
                   }}
                 >
-                  ❌ Cancelar
+                  Cancelar
                 </button>
               </>
             )}
@@ -265,25 +280,16 @@ const PerfilUsuario = () => {
             paddingTop: '20px',
             borderTop: '1px solid #eee'
           }}>
-            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}>Estatísticas</h3>
+            <h3 style={{ color: '#dc143c', marginBottom: '15px' }}></h3>
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
               gap: '15px',
               marginBottom: '20px'
             }}>
-              <div style={{ background: '#fff0f0', padding: '15px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '1.5rem', color: '#dc143c' }}>5</div>
-                <div style={{ fontSize: '0.9rem', color: '#666' }}>Eventos Participados</div>
-              </div>
-              <div style={{ background: '#fff0f0', padding: '15px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '1.5rem', color: '#dc143c' }}>12</div>
-                <div style={{ fontSize: '0.9rem', color: '#666' }}>Horas Voluntárias</div>
-              </div>
-              <div style={{ background: '#fff0f0', padding: '15px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '1.5rem', color: '#dc143c' }}>R$ 250</div>
-                <div style={{ fontSize: '0.9rem', color: '#666' }}>Doações</div>
-              </div>
+              
+              
+              
             </div>
 
             <button 
@@ -298,7 +304,7 @@ const PerfilUsuario = () => {
                 marginTop: '10px'
               }}
             >
-              🚪 Sair da Conta
+              Sair da Conta
             </button>
           </div>
         </div>
