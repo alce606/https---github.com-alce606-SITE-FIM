@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import UsuarioService from '../services/UsuarioService';
 
 const EsqueceuSenha = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
@@ -49,9 +50,9 @@ const EsqueceuSenha = () => {
     setLoading(true);
     
     try {
-      // Aqui será implementado pelo professor
+      await UsuarioService.alterarSenha(email, novaSenha);
       setMessage('Senha alterada com sucesso! Você pode fazer login agora.');
-      setStep(4);
+      navigate('/login');
     } catch (error) {
       setMessage('Erro ao alterar senha.');
     } finally {

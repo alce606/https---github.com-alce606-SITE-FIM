@@ -16,7 +16,7 @@ const signup = (nome, email, senha) => {
     formData.append('senha', senha);
     formData.append('nivelAcesso', 'USER');
     formData.append('statusUsuario', 'ATIVO');
-    
+
     return http.mainInstance.post(API_URL + "create", formData);
 };
 
@@ -71,15 +71,30 @@ const update = (id, data) => {
     return http.multipartInstance.put(API_URL + `update/${id}`, formData);
 };
 
+const _alterar = (file, id, data) => {
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('nome', data.nome);
+    formData.append('email', data.email);
+    formData.append('nivelAcesso', data.nivelAcesso);
+
+    for (const key of formData.entries()) {
+        console.log(key[0] + ', ' + key[1]);
+    }
+
+    return http.multipartInstance.put(API_URL + `editar/${id}`, formData);
+};
+
 const alterar = async (id, data) => {
     const response = await http.mainInstance.put(API_URL + `alterar/${id}`, data);
-    
+
     // Atualiza localStorage se for o usuário logado
     const currentUser = getCurrentUser();
     if (currentUser && currentUser.id === id) {
         updateCurrentUser({ ...currentUser, ...response.data });
     }
-    
+
     return response;
 };
 
@@ -91,11 +106,11 @@ const reativar = (id) => {
     return http.mainInstance.put(API_URL + `reativar/${id}`);
 };
 
-const alterarSenha = (id, data) => {
+const alterarSenha = (email, novaSenha) => {
     const formData = new FormData();
-    formData.append('senha', data.senha);
- 
-    return http.mainInstance.put(API_URL + `alterarSenha/${id}`, formData);
+    formData.append('senha', novaSenha);
+
+    return http.mainInstance.put(API_URL + `alterarSenha/${email}`, formData);
 };
 
 const findByNome = nome => {
@@ -158,6 +173,7 @@ const UsuarioService = {
     create,
     update,
     alterar,
+    _alterar,
     inativar,
     reativar,
     alterarSenha,

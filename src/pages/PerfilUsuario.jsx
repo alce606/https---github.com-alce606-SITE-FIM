@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UsuarioService from '../services/UsuarioService';
+import logo from '../assets/images/blz_perfil.png';
 
 const PerfilUsuario = () => {
   const navigate = useNavigate();
@@ -65,15 +66,7 @@ const PerfilUsuario = () => {
     
     try {
       const currentUser = UsuarioService.getCurrentUser();
-      const formData = new FormData();
-      formData.append('nome', userData.nome);
-      formData.append('email', userData.email);
-      formData.append('nivelAcesso', currentUser.nivelAcesso || 'USER');
-      if (foto) {
-        formData.append('foto', foto);
-      }
-      
-      await UsuarioService.alterar(currentUser.id, formData);
+      await UsuarioService._alterar(foto, currentUser.id, userData);
       
       if (alterarSenha && novaSenha) {
         await UsuarioService.alterarSenha(currentUser.id, { senha: novaSenha });
@@ -108,7 +101,7 @@ const PerfilUsuario = () => {
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           {userData.foto ? (
             <img 
-              src={`data:image/jpeg;base64,${userData.foto}`} 
+              src={userData.foto ? 'data:image/jpeg;base64,' + userData.foto : logo}
               alt="Foto do Usuário" 
               style={{
                 width: '120px',
