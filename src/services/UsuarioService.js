@@ -135,15 +135,15 @@ const isAuthenticated = () => {
 
 
 const forgotPassword = async (email) => {
-    return http.mainInstance.post(API_URL + "forgotPassword", { email });
+    return http.mainInstance.post(`senha/solicitar?email=${email}`);
 };
 
-const validateToken = async (email, token) => {
-    return http.mainInstance.post(API_URL + "validateToken", { email, token });
+const validateToken = async (token) => {
+    return http.mainInstance.post("senha/validar", { token });
 };
 
-const resetPassword = async (email, token, novaSenha) => {
-    return http.mainInstance.post(API_URL + "resetPassword", { email, token, novaSenha });
+const resetPassword = async (token, novaSenha) => {
+    return http.mainInstance.post("senha/redefinir", { token, novaSenha });
 };
 
 const UsuarioService = {
